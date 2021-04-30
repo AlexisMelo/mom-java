@@ -5,12 +5,22 @@ import java.util.List;
 import ir.mom.server.controller.MomDao;
 import ir.mom.server.model.Message;
 
+// import javax.servlet.ServletException;
+// import javax.servlet.http.HttpServlet;
+// import javax.servlet.http.HttpServletRequest;
+// import javax.servlet.http.HttpServletResponse;
+
+// import static spark.Spark.get;
+// import spark.Request;
+// import spark.Response;
+// import spark.Route;
+
 public class MomService {
 
-    private MomDao dao;
+    private final MomDao dao;
 
-    public MomService() {
-        this.dao = new MomDao();
+    public MomService(MomDao dao) {
+        this.dao = dao;
     }
 
     public String sendMessageToTopic(String topic_name, String token_sender, String message) {

@@ -3,3 +3,6 @@ class/
 
 build/
 *.jar
+
+.vscode
+.project
