@@ -1,8 +1,6 @@
 class/
 *.class
 
-build/
-*.jar
 
 .vscode
 .project
