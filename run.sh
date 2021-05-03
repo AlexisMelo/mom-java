@@ -1,3 +1,4 @@
 #!/bin/bash 
 
-echo "TODO: make run script"
+echo "Running server"
+java -cp class/:lib/* ir.mom.server.view.MomService

@@ -1,14 +1,12 @@
 package ir.mom.server.view;
 
-import java.util.List;
-
 import ir.mom.server.controller.MomDao;
-import ir.mom.server.model.Message;
 
 import static spark.Spark.get;
+import static spark.Spark.path;
+import static spark.Spark.before;
 import spark.Request;
 import spark.Response;
-import spark.Route;
 
 public class MomService {
 
@@ -18,23 +16,40 @@ public class MomService {
         this.dao = dao;
     }
 
-    public String sendMessageToTopic(String topic_name, String token_sender, String message) {
+    public String pong(Request req, Response res) {
+        return "pong!";
+    }
+
+    public Response sendMessageToTopic(Request req, Response res) {
         return null;
     }
 
-    public String sendMessageTo(String token_receiver, String token_sender, String message) {
+    public Response sendMessageToApplication(Request req, Response res) {
         return null;
     }
 
-    public List<Message> getMessageTopic(String topic_name) {
+    public Response getMessageTopic(Request req, Response res) {
         return null;
     }
 
-    public List<Message> getMessagesPeerToPeer(String token) {
+    public Response getMessagesApplication(Request req, Response res) {
         return null;
     }
 
-    public List<Message> getAllMessageFromApplication() {
+    public Response getAllMessageFromApplication(Request req, Response res) {
         return null;
+    }
+
+    public static void main(String[] args) {
+
+        MomService service = new MomService(new MomDao());
+
+        get("/ping", service::pong);
+
+        path("/topic", () -> {
+            before("/*", (q, a) -> System.out.println("Received topic call"));
+            get("/ping", service::pong);
+        });
+
     }
 }
