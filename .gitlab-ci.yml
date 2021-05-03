@@ -5,5 +5,7 @@ stages:
 
 build:
   stage: build
-  script: ./compile.sh
+  script: 
+    - ./compile.sh server
+    - ./compile.sh client
 
