@@ -10,6 +10,5 @@ build:
 
 execute:
   stage: execute
-  dependencies:
-    - build
+  needs: [build]
   script: ./run.sh
