@@ -1,0 +1,15 @@
+image: java:latest
+
+stages:
+  - build
+  - execute
+
+build:
+  stage: build
+  script: ./compile.sh
+
+execute:
+  stage: execute
+  dependencies:
+    - build
+  script: ./run.sh
