@@ -11,7 +11,7 @@ compile_client() {
 }
 
 case $1 in
-"server") compile_server ;;
-"client") compile_client ;;
-"") compile_server; compile_client;;
+    "server") compile_server ;;
+    "client") compile_client ;;
+    "") compile_server; compile_client;;
 esac
