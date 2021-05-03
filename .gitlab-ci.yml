@@ -2,13 +2,8 @@ image: java:latest
 
 stages:
   - build
-  - execute
 
 build:
   stage: build
   script: ./compile.sh
 
-execute:
-  stage: execute
-  needs: [build]
-  script: ./run.sh
