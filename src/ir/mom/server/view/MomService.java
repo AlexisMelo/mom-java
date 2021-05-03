@@ -50,7 +50,7 @@ public class MomService {
             before("/*", (q, a) -> System.out.println("Received topic call"));
             get("/ping", service::pong);
             get("/:name", (req, res) -> {
-                TopicJson topic = new TopicJson(req.params(":name"));
+                TopicJson topic = new TopicJson(req.params(":name"))
                 return topic.toJson();
             });
 
