@@ -37,9 +37,9 @@ public class Message {
     }
 
     public void addReader(List<Application> readers) {
-        /*for (Application app: readers) {
+        for (Application app: readers) {
             this.addReader(app);            
-        }*/
+        }
     }
 
     public void removeReader(Application reader) {
@@ -83,26 +83,56 @@ public class Message {
         sb.append("Sender : " + this.sender);
         sb.append("\nContent : " + this.content);
         sb.append("\nReaders : ");
-        for (Application app : this.hasRead.keySet()) {
-            sb.append("\n - " + app);
+        for (Map.Entry<Application, Boolean> hasRead : this.hasRead.entrySet()) {
+            sb.append("\n - " + hasRead.getKey() + " : " + hasRead.getValue());
         }
         return sb.toString();
     }
 
     public static void main(String[] args) {
         
-        Application app1 = new Application("supertoken");
-        Application app2 = new Application("gigatoken");
-        Application app3 = new Application("ultratoken");
+        Application app1 = new Application("PC d'Alexis");
+        Application app2 = new Application("Gameboy de Léo");
+        Application app3 = new Application("Wii de Louis");
+        Application app4 = new Application("AppleWatch d'Alexandre");
+        Application app5 = new Application("Frigo connecté de Malandain");
 
         Message msg = new Message(app1, "Salut", app2);
 
-        System.out.println("\nTest 1 - Constructeur & ToString");
+        System.out.println("\nTest 1 - Constructeur & ToString ------------------------------");
         System.out.println(msg);
 
-        System.out.println("\nTest 2 - Getters");
+        System.out.println("\nTest 2 - Getters ----------------------------------------------");
         System.out.println("Get sender : " + msg.getSender());
         System.out.println("Get content : " + msg.getContent());
         System.out.println("Get readers : " + msg.getReaders());
+
+        System.out.println("\nTest 3 - Ajout 1 reader ---------------------------------------");
+        System.out.println("Avant ajout : " + msg.getReaders());
+        msg.addReader(app3);
+        System.out.println("Après ajout : " + msg.getReaders());
+
+        System.out.println("\nTest 4 - Ajout 2 readers --------------------------------------");
+        System.out.println("Avant ajout : " + msg.getReaders());
+        List<Application> readers = new ArrayList<Application>();
+        readers.add(app4);
+        readers.add(app5);
+        msg.addReader(readers);
+        System.out.println("Après ajout : " + msg.getReaders());
+
+        System.out.println("\nTest 5 - Suppression reader -----------------------------------");
+        System.out.println("Avant suppression : " + msg.getReaders());
+        msg.removeReader(app3);
+        System.out.println("Après suppression : " + msg.getReaders());
+
+        System.out.println("\nTest 6 - Read -------------------------------------------------");
+        System.out.println("\n" + msg);
+        msg.read(app1);
+        msg.read(app4);
+        System.out.println("\n" + msg);
+
+        System.out.println("\nTest 7 - Json -------------------------------------------------");
+        System.out.println(msg.toJson());
+        
     }
 }
