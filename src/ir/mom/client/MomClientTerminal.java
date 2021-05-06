@@ -1,4 +1,5 @@
 package ir.mom.client;
+
 import java.util.InputMismatchException;
 import  java.io.IOException;
 import java.util.List;
@@ -58,7 +59,7 @@ public class MomClientTerminal {
                 this.printMessagesPeerToPeer();
                 break;
             default:
-                menu();
+                this.menu();
                 break;
         }
     }
@@ -67,8 +68,30 @@ public class MomClientTerminal {
         StringBuilder sb = new StringBuilder();
         sb.append("Vous avez choisi d'étudier les topics.");
         sb.append("\nQue voulez-vous faire ?");
-        sb.append("\n1) S'abonner à un topic");
-        sb.append("\n2) Se désabonner d'un topic");
+        sb.append("\n1) Voir tous les topics");
+        sb.append("\n2) S'abonner à un topic");
+        sb.append("\n3) Se désabonner d'un topic");
+        sb.append("\n4) Publier un message sur un topic");
+        sb.append("\n5) Retour");
+        System.out.println(sb.toString());
+        int answer = this.getIntBetweenRange(1,5);
+        switch(answer) {
+            case 1:
+                this.viewTopics();
+                break;
+            case 2:
+                this.subscribeTopic();
+                break;
+            case 3:
+                this.unsubscribeTopic();
+                break;
+            case 4:
+                this.sendMessageToTopic();
+                break;                
+            default:
+                this.menu();
+                break;
+        }
     }
 
     public void printMessagesPeerToPeer() {
@@ -79,6 +102,7 @@ public class MomClientTerminal {
             sb.append("\n-message1");
             sb.append("\n-message2");
         }
+        System.out.println(sb.toString());
     }
 
     public void printTopicMessage(int idTopic) {
@@ -89,6 +113,7 @@ public class MomClientTerminal {
             sb.append("\n-message1");
             sb.append("\n-message2");
         }
+        System.out.println(sb.toString());
     }
 
     public void sendMessageTo() {
@@ -101,22 +126,59 @@ public class MomClientTerminal {
     }
 
     public void sendMessageToTopic() {
-        List<String> lstTopics = this.client.getTopics();
+        /*List<String> lstTopics = this.client.getTopicsSubscribe();
         StringBuilder sb = new StringBuilder();
         sb.append("Dans quel topic souhaitez-vous envoyer un message ?");
         for(String topic: lstTopics){
              sb.append("\n1)"+topic);
         }
-        int answer = this.getIntBetweenRange(1,lstTopics.size());
-        int idTopic = 2;
+        System.out.println(sb.toString());*/
+        int idTopic = this.getIdTopic();
         String message = this.getMessage();
         this.client.addMessageToTopic(idTopic, message);
     }  
 
     public void subscribeTopic() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vous souhaitez vous abonner à un topic.");
+        sb.append("A quel topic souhaitez-vous vous abonner ?");
+        System.out.println(sb.toString());
+        int idTopic = this.getIdTopic();
+        /*sb.append("\n Dans quel topic souhaitez-vous vous abonner ?");
+        List<String> lstTopics = this.client.getTopics();
+        for(String topic: lstTopics){
+             sb.append("\n1)"+topic);
+        }*/
+        System.out.println("Vous êtes désormais abonné à ce topic.");
+        this.studyTheTopic();
     }
 
     public void unsubscribeTopic() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vous souhaitez vous désabonner à un topic.");
+        sb.append("\n De quel topic souhaitez-vous vous désabonner ?");
+        System.out.println(sb.toString());
+        int idTopic = this.getIdTopic();
+        /*List<String> lstTopics = this.client.getTopicsSubscribe();
+        for(String topic: lstTopics){
+             sb.append("\n1)"+topic);
+        }*/
+        System.out.println("Vous êtes désormais désabonné de ce topic.");
+        this.studyTheTopic();
+    }
+
+    public void viewTopics() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vous souhaitez voir tous les topics crées.");
+        List<String> lstTopics = this.client.getTopics();
+        
+        for(String topic: lstTopics){
+             sb.append("\n - " + topic);
+        }
+
+        System.out.println(sb.toString());
+        
+        this.studyTheTopic();
     }
 
     private int getIntBetweenRange(int min, int max) {
@@ -153,12 +215,17 @@ public class MomClientTerminal {
         return message;
     }
 
+    private int getIdTopic(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Id du topic:");
+        int idTopic = sc.nextInt();
+        return idTopic;
+    }
+
     public static void main(String[] args) {
         
-        MomClientTerminal clt = new MomClientTerminal(null);
+        MomClient momclt = new MomClient("token7889952");
+        MomClientTerminal clt = new MomClientTerminal(momclt);
         clt.menu();
-        //clt.communicateWithOtherApp();
-        //clt.sendMessageTo();
-        //String lol = clt.getMessage();
     }
 }

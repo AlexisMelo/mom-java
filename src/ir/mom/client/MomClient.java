@@ -4,12 +4,16 @@ import ir.mom.server.model.Message;
 
 import java.util.List;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.ArrayList;
+
+import javax.ws.rs.core.Response;
 
 public class MomClient {
     private String token;
@@ -25,9 +29,16 @@ public class MomClient {
         this.jaxClient = ClientBuilder.newClient();
     }
 
-    public void addMessageToTopic(int idTopic, String message){
-        //Message message = this.momentClientTerminal.sendMessageToTopic();
+    public Response addMessageToTopic(int idTopic, String message){
+        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+                                 .path("topics/{idTopic}")
+                                 .resolveTemplate("idTopic",idTopic);
         
+        Response response = target.request(MediaType.APPLICATION_JSON)
+                                  .header("token",this.token)
+                                  .post(Entity.json(message));
+        
+        return response;
     }
 
     public void sendMessageTo(String token, String message){
@@ -43,6 +54,10 @@ public class MomClient {
     }
 
     public List<String> getTopics(){
-        return null;
+        List<String> lst = new ArrayList<String>();
+        lst.add("Cinema");
+        lst.add("Sports");
+        lst.add("Jeux-vidéos");
+        return lst;
     }
 }
