@@ -23,4 +23,8 @@ public class Application extends MessageQueue {
 
     public void removeSubscrption(Topic topic) {
     }
+
+    public String toString() {
+        return this.token;
+    }
 }

@@ -96,23 +96,19 @@ public class MomClientTerminal {
 
     public void printMessagesPeerToPeer() {
         StringBuilder sb = new StringBuilder();
-        List<String> lstMessages = this.client.getMessagesPeerToPeer();
-        for(String message : lstMessages){
-            sb.append("token:");
-            sb.append("\n-message1");
-            sb.append("\n-message2");
-        }
+        //Response httpResponse = this.client.getMessagesPeerToPeer();
+
+        sb.append("Cette fonctionnalité n'est pas encore disponible");
+
         System.out.println(sb.toString());
     }
 
     public void printTopicMessage(int idTopic) {
         StringBuilder sb = new StringBuilder();
-        List<String> lstMessages = this.client.getMessagesTopic(idTopic);
-        for(String message : lstMessages){
-            sb.append("sujetdutopic:");
-            sb.append("\n-message1");
-            sb.append("\n-message2");
-        }
+        //Response httpResponse = this.client.getMessagesTopic(idTopic);
+
+        sb.append("Cette fonctionnalité n'est pas encore disponible");
+
         System.out.println(sb.toString());
     }
 
@@ -149,6 +145,7 @@ public class MomClientTerminal {
         for(String topic: lstTopics){
              sb.append("\n1)"+topic);
         }*/
+        this.client.subscribeTopic(idTopic);
         System.out.println("Vous êtes désormais abonné à ce topic.");
         this.studyTheTopic();
     }
@@ -163,18 +160,18 @@ public class MomClientTerminal {
         for(String topic: lstTopics){
              sb.append("\n1)"+topic);
         }*/
+        this.client.unsubscribeTopic(idTopic);
         System.out.println("Vous êtes désormais désabonné de ce topic.");
         this.studyTheTopic();
     }
 
     public void viewTopics() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Vous souhaitez voir tous les topics crées.");
-        List<String> lstTopics = this.client.getTopics();
         
-        for(String topic: lstTopics){
-             sb.append("\n - " + topic);
-        }
+        sb.append("Vous souhaitez voir tous les topics crées.");
+        //Response httpResponse = this.client.getTopics();
+
+        sb.append("Cette fonctionnalité n'est pas encore disponible");
 
         System.out.println(sb.toString());
         
