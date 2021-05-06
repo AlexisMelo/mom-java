@@ -89,6 +89,9 @@ public class Message {
         return sb.toString();
     }
 
+    public Boolean hasRead(Application potentialReader){
+        return this.hasRead.get(potentialReader); //null si potentialReader not inside
+    }
     public static void main(String[] args) {
         
         Application app1 = new Application("PC d'Alexis");
