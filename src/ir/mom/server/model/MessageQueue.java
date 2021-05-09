@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageQueue {
-    private List<Message> messages; //à transformer en set de message pour éviter les doublons ? ou ajouter des conditions dans les add ?
-
+    private List<Message> messages; 
+    //à transformer en set de message pour éviter les doublons ? ou ajouter des conditions dans les add ?
+    // Léo: Non osef non ? si un user veut envoyer deux fois le même message c'est son problème non ?
     public MessageQueue() {
         this.messages = new ArrayList<Message>();
     }

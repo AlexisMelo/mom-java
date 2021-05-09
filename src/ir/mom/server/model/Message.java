@@ -13,11 +13,11 @@ public class Message {
     private String content;
     private Map<Application, Boolean> hasRead;
 
-    public Message(Application sender, String content, Application receiver) {
+    public Message(Application sender, String content, MessageQueue receiver) {
         this.sender = sender;
         this.content = content;
         this.hasRead = new HashMap<Application, Boolean>();
-        this.hasRead.put(receiver, false);
+        receiver.addMessage(this); //C'est la MessageQueure qui gère a quelles applications elle envoie le message //cf diagramme d'interaction
     }
 
     public String getContent() {

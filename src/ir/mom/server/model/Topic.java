@@ -8,11 +8,14 @@ public class Topic extends MessageQueue {
 
     public Topic(String title) {
         this.title = title;
+        this.subscribers = new List<Application>();
     }
 
     public void addSubscriber(Application subscriber) {
+        this.subscribers.add(subscriber);
     }
 
     public void removeSubscriber(Application subscriber) {
+        this.remove.add(subscriber);
     }
 }
