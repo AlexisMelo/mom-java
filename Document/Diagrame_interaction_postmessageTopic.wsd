@@ -1,0 +1,54 @@
+@startuml Diagramme_Interaction-postMessageTopic
+
+skinparam backgroundColor #EEEEEE
+
+skinparam sequence {
+ArrowColor DeepSkyBlue
+ActorBorderColor DeepSkyBlue
+LifeLineBorderColor blue
+LifeLineBackgroundColor #A9DCDF
+
+ParticipantBorderColor white
+ParticipantBackgroundColor DodgerBlue
+ParticipantFontName Impact
+ParticipantFontSize 17
+ParticipantFontColor white
+}
+
+participant Client
+activate Client
+Client -> MOMService: postMessageTopic (HTTP)
+activate MOMService
+
+MOMService -> MOMDAO: sendMessageTOTopic
+activate MOMDAO
+
+MOMDAO -> MOMDAO: getTopic
+MOMDAO -> MOMDAO: getApplication
+
+MOMDAO -> Message: create Message
+activate Message
+
+Message -> Topic: addMessage
+activate Topic
+
+Topic -> Message: addReaders
+deactivate Topic
+
+Message -> MOMDAO: Message
+deactivate Message
+
+
+deactivate Topic
+MOMDAO --> MOMService
+deactivate MOMDAO
+MOMService --> Client: ACK
+deactivate MOMService
+deactivate Client
+
+
+@enduml
+
+'alt successful case
+'else something
+'end

@@ -1,0 +1,159 @@
+@startuml
+package Client <<Folder>> {
+  class MomClient
+  class MomClientTerminal
+}
+
+
+
+package Server <<Folder>> {
+  package Controler{
+    class MomDao
+  }
+  package View{
+    class MomService
+  }
+  package Models {
+    class Message
+    class MessageQueue
+    class Topic
+    class Application
+  }
+  package Exception{
+    class MomException
+    class TopicDoesNotExistException
+    class ApplicationDoesNotExistException
+    class ApplicationNotSubscribedException
+  }
+}
+
+class Message {
+    - Application sender
+    - String content
+    - Map<Application, bool> hasRead
+
+    + Message(Application sender, String content, MessageQueue receiver) : Message 
+    + getContent() : String
+    + getSender() : Application
+    + addReader(Application reader) : void
+    + addReader(List<Application> readers) : void
+    + removeReader(Application reader) : void
+    + getReaders() : List<Application>
+    + read(Application reader) : void
+    + toJson() : String
+    + erasable() : boolean
+    + hasRead() : boolean
+    + toString() : String
+}
+
+
+class MessageQueue {
+    - List<Message> messages;
+
+    + MessageQueue() : MessageQueue 
+    + addMessage(Message message) : void
+    + removeMessage(Message message) : void
+    + getMessageToRead(Application reader) : List<Message>
+    + toString() : String
+}
+
+class Application {
+    - String token
+    - List<Topic> supscriptions
+    - MessageQueue queue
+
+    + Application(String token) : Application
+    + getAllPrivateMessages() : List<Messages>
+    + getPrivateMessagesFrom(Application application) : List<Messages>
+    + addSubscription(Topic topic) : void
+    + removeSubscription(Topic topic) : void
+}
+
+class Topic {
+    - String title
+    - List<Application> subscribers
+    - MessageQueue queue
+
+    + Topic(String title) : Topic
+    + addSubscriber(Application subscriber) : void
+    + removeSubscriber(Application subscriber) : void
+}
+
+class MomDao {
+    - Map<String,Topic> lstTopic
+    - Map<String,Application> lstApplication
+     
+    + MomDao() : MomDao
+    + {static} load(String path) : MomDao
+    + save() : void
+
+
+    ' Insert message 
+    + subApplicationToTopic(String token, String topicTitle) : void
+    + sendMessageToTopic(String sender, String idTopic, String msg) : void
+    + sendMessageToApplication(String sender, String tokenReceiver, String msg) : void
+
+    ' Select message 
+    + getMessageFromApplication(String tokenClient, String tokenTarget) : List<Message>
+    + getMessageFromTopic(String tokenClient, String topicTitle) : List<Message>
+    + getAllMessageFromApplication(String tokenClient) : List<Message>
+    + getMessageFromAllTopic(String tokenClient) : List<Message>
+    
+    'Getter
+    + getTopicFromString(String topicTitle) : Topic
+    + getApplicationFromString(String ApplicationToken) : Application
+}
+
+class MomService {
+    + sendMessageToTopic(String topic_name, String token_sender, String message) : String
+    + sendMessageTo(String token_receiver, String token_sender, String message) : String
+    + getMessageTopic(String topic_name) : List<Message>
+    + getMessagesPeerToPeer(String token) : List<Message>
+    + getAllMessageFromApplication() : List<Message>
+}
+
+class MomClient {
+    - String token
+    - List<String> lstTopic
+    - Client jaxClient
+    
+    + addMessageToTopic(int topicId, String message) : Response
+    + sendMessageTo(String tokenOtherApp, String message) : Response
+    + getMessagesTopic(int topicId) : Response
+    + getMessagesPeerToPeer() : Response
+    + getTopics() : Response
+    + subscribeTopic(int topicId) : Response
+    + unsubscribeTopic(int topicId) : Response
+}
+
+abstract class MomClientTerminal {
+    - MomClient client
+    + menu()
+    - communicateWithOtherApp()
+    - studyTheTopic()
+    + printMessagesPeerToPeer()
+    + printTopicMessage(int idTopic)
+    + sendMessageTo()
+    + sendMessageToTopic()
+    + subscribeTopic()
+    + unsubscribeTopic()
+    + viewTopics()
+    - getIntBetweenRange(int min, int max) : int
+    - getMessage() : String
+    - getIdTopic() : int
+}
+
+ 
+
+MomClient "1.0" <-- MomClientTerminal
+MomDao <-- MomService
+Message "1" -- "0.n" MessageQueue
+Topic --|> MessageQueue
+Application --|> MessageQueue
+Topic "0.n" -- "0.n" Application
+
+
+MomException  <|-- TopicDoesNotExistException
+MomException  <|-- ApplicationDoesNotExistException
+MomException  <|-- ApplicationNotSubscribedException
+@enduml
