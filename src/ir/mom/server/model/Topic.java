@@ -25,6 +25,14 @@ public class Topic extends MessageQueue implements Serializable{
         return this.title;
     }
 
+    @Override
+    public void addMessage(Message message){
+        super.addMessage(message);
+        for(Application value : this.getSubscribers()){
+            message.addReader(value);
+        }
+    }
+
     public List<Application> getSubscribers(){
         return this.subscribers;
     }

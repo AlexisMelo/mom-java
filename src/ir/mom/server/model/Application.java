@@ -26,15 +26,21 @@ public class Application extends MessageQueue implements Serializable{
         return false;
     }
 
+    @Override
+    public void addMessage(Message message){
+        super.addMessage(message);
+        message.addReader(this);
+    }
+
     public List<Message> getPrivateMessagesFrom(Application application) {
         List<Message> messagesToRead = new ArrayList<Message>();
 
         for (Message msg : this.getMessages()) {
 
             Boolean hasRead = msg.hasRead(this);
-
             if (hasRead != null && !hasRead && msg.getSender().equals(application)) {
                 messagesToRead.add(msg);
+                msg.read(this);
             }
         }
 

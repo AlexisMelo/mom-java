@@ -59,7 +59,7 @@ public class Message implements Serializable{
         
         //check pour ne pas l'ajouter si le reader en paramètre n'est pas dans les readers de base
         if (this.hasRead.containsKey(reader)) {
-            this.hasRead.put(reader, true);
+            this.hasRead.replace(reader, true);
         }
     }
 
