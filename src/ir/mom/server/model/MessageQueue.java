@@ -1,14 +1,18 @@
 package ir.mom.server.model;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
-public class MessageQueue {
+public class MessageQueue implements Serializable{
     private List<Message> messages; 
     //à transformer en set de message pour éviter les doublons ? ou ajouter des conditions dans les add ?
     // Léo: Non osef non ? si un user veut envoyer deux fois le même message c'est son problème non ?
     public MessageQueue() {
         this.messages = new ArrayList<Message>();
+    }
+    public List<Message> getMessages(){
+        return this.messages;
     }
 
     public void addMessage(Message message) {

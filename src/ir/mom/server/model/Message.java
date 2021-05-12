@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.io.Serializable;
 
 import com.google.gson.Gson;
 
-public class Message {
+public class Message implements Serializable{
 
     private Application sender;
     private String content;
