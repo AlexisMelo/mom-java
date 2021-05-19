@@ -1,21 +1,23 @@
 package ir.mom.server.model;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.io.Serializable;
 import java.util.List;
+
+import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 public class MessageQueue implements Serializable{
     private List<Message> messages; 
     //à transformer en set de message pour éviter les doublons ? ou ajouter des conditions dans les add ?
     // Léo: Non osef non ? si un user veut envoyer deux fois le même message c'est son problème non ?
     public MessageQueue() {
-        this.messages = new ArrayList<Message>();
+        this.messages = new LinkedList<Message>();
     }
     public List<Message> getMessages(){
         return this.messages;
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(Message message) throws CantAddWriterOfMessageToReadersException {
         this.messages.add(message);
     }
 
@@ -29,14 +31,15 @@ public class MessageQueue implements Serializable{
      * @return Liste des messages que le reader n'a pas lu
      */
     public List<Message> getMessageToRead(Application reader) {
-        List<Message> messagesToRead = new ArrayList<Message>();
+        List<Message> messagesToRead = new LinkedList<Message>();
 
         for (Message msg : this.messages) {
-
+            System.out.println(msg);
             Boolean hasRead = msg.hasRead(reader);
 
             if (hasRead != null && !hasRead) {
                 messagesToRead.add(msg);
+                msg.read(reader);
             }
         }
 
@@ -53,7 +56,7 @@ public class MessageQueue implements Serializable{
 
         return sb.toString();
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CantAddWriterOfMessageToReadersException {
         Application app1 = new Application("PC d'Alexis");
         Application app2 = new Application("Gameboy de Léo");
         Application app3 = new Application("Table de pingpong de Benji");

@@ -2,9 +2,13 @@ package ir.mom.server.model;
 
 import java.io.Serializable;
 import java.util.List;
+
+import ir.mom.server.exception.ApplicationAlreadySubscribedException;
+import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
+
 import java.util.ArrayList;
 
-public class Topic extends MessageQueue implements Serializable{
+public class Topic extends MessageQueue implements Serializable {
     private String title;
     private List<Application> subscribers;
 
@@ -13,12 +17,25 @@ public class Topic extends MessageQueue implements Serializable{
         this.subscribers = new ArrayList<Application>();
     }
 
-    public void addSubscriber(Application subscriber) {
+    public void addSubscriber(Application subscriber) throws ApplicationAlreadySubscribedException {
+
+        if(this.getSubscribers().contains(subscriber)) 
+            throw new ApplicationAlreadySubscribedException();
+
         this.getSubscribers().add(subscriber);
+        this.getMessages().forEach((msg) -> {
+            try {
+                msg.addReader(subscriber);
+            } catch (CantAddWriterOfMessageToReadersException e) {
+            }
+        });
     }
 
     public void removeSubscriber(Application subscriber) {
         this.getSubscribers().remove(subscriber);
+        this.getMessages().forEach((msg) -> {
+            msg.removeReader(subscriber);
+        });
     }
 
     public String getTitle(){
@@ -26,10 +43,13 @@ public class Topic extends MessageQueue implements Serializable{
     }
 
     @Override
-    public void addMessage(Message message){
+    public void addMessage(Message message) throws CantAddWriterOfMessageToReadersException {
         super.addMessage(message);
         for(Application value : this.getSubscribers()){
-            message.addReader(value);
+            try {
+                message.addReader(value);
+            } catch (CantAddWriterOfMessageToReadersException e) {
+            }
         }
     }
 

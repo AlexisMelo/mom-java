@@ -9,6 +9,8 @@ import ir.mom.server.model.Topic;
 import ir.mom.server.model.Application;
 import ir.mom.server.model.Message;
 import ir.mom.server.exception.ApplicationNotSubscribedException;
+import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
+import ir.mom.server.exception.TopicDoesNotExistException;
 import ir.mom.server.exception.ApplicationAlreadySubscribedException;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,23 +45,23 @@ public class MomDao implements Serializable {
         oos.writeObject(this);
     }
 
-    public void subApplicationToTopic(String token, String topicTitle) {
-        Application client = this.getApplicationFromString(token);
-        Topic topic = this.getTopicFromString(topicTitle);
-
-        client.addSubscription(topic);
-    }
-
-    public void sendMessageToTopic(String sender, String idTopic, String msg) {
+    public void sendMessageToTopic(String sender, String idTopic, String msg) throws ApplicationNotSubscribedException, TopicDoesNotExistException {
         Application senderApp = this.getApplicationFromString(sender);
         Topic topic = this.getTopicFromString(idTopic);
-        new Message(senderApp,msg,topic); // le message se met tout seul dans la MessageQueue
+        
+        if (!topic.getSubscribers().contains(senderApp)) {
+            throw new ApplicationNotSubscribedException("L'application n'est pas abbonée à ce topic");
+        }
+        try {
+            new Message(senderApp,msg,topic);
+        } catch (CantAddWriterOfMessageToReadersException e) {
+        }
     }
 
-    public void sendMessageToApplication(String sender, String tokenReceiver, String msg) {
+    public void sendMessageToApplication(String sender, String tokenReceiver, String msg) throws CantAddWriterOfMessageToReadersException {
         Application senderApp = this.getApplicationFromString(sender);
         Application receiverApp = this.getApplicationFromString(tokenReceiver);
-        new Message(senderApp,msg,receiverApp); // le message se met tout seul dans la MessageQueue
+        new Message(senderApp,msg,receiverApp);
     }
 
     public List<Message> getMessageFromApplication(String tokenClient, String tokenTarget) { 
@@ -68,12 +70,14 @@ public class MomDao implements Serializable {
         return client.getPrivateMessagesFrom(target);
     }
 
-    public List<Message> getMessageFromTopic(String tokenClient, String topicTitle) throws ApplicationNotSubscribedException {
+    public List<Message> getMessageFromTopic(String tokenClient, String topicTitle) throws ApplicationNotSubscribedException, TopicDoesNotExistException {
+        
         Application client = this.getApplicationFromString(tokenClient);
         Topic topic = this.getTopicFromString(topicTitle);
-        if(!topic.getSubscribers().contains(client)){
-            throw new ApplicationNotSubscribedException("L'application n'est pas abboné à ce topic");
-        }
+
+        if(!topic.getSubscribers().contains(client))
+            throw new ApplicationNotSubscribedException("L'application n'est pas abbonée à ce topic");
+
         return topic.getMessageToRead(client);
     }
 
@@ -92,18 +96,24 @@ public class MomDao implements Serializable {
         return client.getAllPrivateMessages();
     }
 
-    public void subscribeToTopic(String tokenClient, String topicTitle) throws ApplicationAlreadySubscribedException{
+    public void subscribeToTopic(String tokenClient, String topicTitle) throws ApplicationAlreadySubscribedException {
         Application client = this.getApplicationFromString(tokenClient);
-        Topic topic = this.getTopicFromString(topicTitle);
-        if(client.getSupscriptions().contains(topic)) throw new ApplicationAlreadySubscribedException();
+        Topic topic;
+
+        try {
+            topic = this.getTopicFromString(topicTitle);
+        } catch (TopicDoesNotExistException e) {
+            topic = new Topic(topicTitle);
+            this.lstTopic.put(topicTitle, topic);
+        }
+
         client.addSubscription(topic);
     }
 
-    public Topic getTopicFromString(String topicTitle) {
+    public Topic getTopicFromString(String topicTitle) throws TopicDoesNotExistException {
         Topic topic = this.lstTopic.get(topicTitle);
         if(topic == null){
-            topic = new Topic(topicTitle);
-            this.lstTopic.put(topicTitle,topic);
+            throw new TopicDoesNotExistException("Le topic "+topicTitle+" n'existe pas.");
         }
         return topic;
     }

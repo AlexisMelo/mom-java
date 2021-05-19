@@ -7,12 +7,12 @@ clean() {
 
 compile_server() {
     echo "-> Compiling server..."
-    javac -cp class:lib/* -sourcepath src src/ir/mom/server/view/MomService.java -d class/
+    javac -cp class:lib/* -sourcepath src src/ir/mom/server/view/MomService.java -d class/ -Xlint:unchecked
 }
 
 compile_client() {
     echo "-> Compiling client..."
-    javac -cp class:lib/* -sourcepath src src/ir/mom/client/MomClientTerminal.java -d class/
+    javac -cp class:lib/* -sourcepath src src/ir/mom/client/MomClientTerminal.java -d class/ -Xlint:unchecked
 
 }
 

@@ -1,16 +1,20 @@
 package ir.mom.server.model;
 
 import java.util.List;
-import java.util.ArrayList;
+
+import ir.mom.server.exception.ApplicationAlreadySubscribedException;
+import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
+
+import java.util.LinkedList;
 import java.io.Serializable;
 
-public class Application extends MessageQueue implements Serializable{
+public class Application extends MessageQueue implements Serializable {
     private String token;
-    private List<Topic> supscriptions;
+    private List<Topic> subscriptions;
 
     public Application(String token) {
         this.token = token;
-        this.supscriptions = new ArrayList();
+        this.subscriptions = new LinkedList<Topic>();
     }
 
     public List<Message> getAllPrivateMessages() {
@@ -27,13 +31,13 @@ public class Application extends MessageQueue implements Serializable{
     }
 
     @Override
-    public void addMessage(Message message){
+    public void addMessage(Message message) throws CantAddWriterOfMessageToReadersException {
         super.addMessage(message);
         message.addReader(this);
     }
 
     public List<Message> getPrivateMessagesFrom(Application application) {
-        List<Message> messagesToRead = new ArrayList<Message>();
+        List<Message> messagesToRead = new LinkedList<Message>();
 
         for (Message msg : this.getMessages()) {
 
@@ -47,13 +51,18 @@ public class Application extends MessageQueue implements Serializable{
         return messagesToRead;
     }
 
-    public void addSubscription(Topic topic) {
-        this.supscriptions.add(topic);
+    public void addSubscription(Topic topic) throws ApplicationAlreadySubscribedException {
+        
         topic.addSubscriber(this);
+
+        if(this.getSupscriptions().contains(topic)) 
+            throw new ApplicationAlreadySubscribedException("");
+
+        this.subscriptions.add(topic);
     }
 
     public void removeSubscrption(Topic topic) {
-        this.supscriptions.remove(topic);
+        this.subscriptions.remove(topic);
         topic.removeSubscriber(this);
     }
 
@@ -62,7 +71,7 @@ public class Application extends MessageQueue implements Serializable{
     }
 
     public List<Topic> getSupscriptions(){
-        return this.supscriptions;
+        return this.subscriptions;
     }
 
     public String toString() {

@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.io.Serializable;
 
-import com.google.gson.Gson;
+import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
+
+import java.io.Serializable;
 
 public class Message implements Serializable{
 
@@ -14,7 +15,7 @@ public class Message implements Serializable{
     private String content;
     private Map<Application, Boolean> hasRead;
 
-    public Message(Application sender, String content, MessageQueue receiver) {
+    public Message(Application sender, String content, MessageQueue receiver) throws CantAddWriterOfMessageToReadersException {
         this.sender = sender;
         this.content = content;
         this.hasRead = new HashMap<Application, Boolean>();
@@ -29,18 +30,15 @@ public class Message implements Serializable{
         return this.sender;
     }
 
-    public void addReader(Application reader) {
+    public void addReader(Application reader) throws CantAddWriterOfMessageToReadersException {
 
         //check si le reader n'est pas déjà dans la liste
-        if (!this.hasRead.containsKey(reader)) {
-            this.hasRead.put(reader, false);
+        if (this.hasRead.containsKey(reader)) {
+            throw new CantAddWriterOfMessageToReadersException("L'application "+reader.getToken()+" est le lecteur de ce message.");
         }
-    }
+        
+        this.hasRead.put(reader, false);
 
-    public void addReader(List<Application> readers) {
-        for (Application app: readers) {
-            this.addReader(app);            
-        }
     }
 
     public void removeReader(Application reader) {
@@ -61,10 +59,6 @@ public class Message implements Serializable{
         if (this.hasRead.containsKey(reader)) {
             this.hasRead.replace(reader, true);
         }
-    }
-
-    public String toJson() {
-        return new Gson().toJson(this);
     }
 
     /**
@@ -93,7 +87,7 @@ public class Message implements Serializable{
     public Boolean hasRead(Application potentialReader){
         return this.hasRead.get(potentialReader); //null si potentialReader not inside
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CantAddWriterOfMessageToReadersException {
         
         Application app1 = new Application("PC d'Alexis");
         Application app2 = new Application("Gameboy de Léo");
@@ -121,7 +115,6 @@ public class Message implements Serializable{
         List<Application> readers = new ArrayList<Application>();
         readers.add(app4);
         readers.add(app5);
-        msg.addReader(readers);
         System.out.println("Après ajout : " + msg.getReaders());
 
         System.out.println("\nTest 5 - Suppression reader -----------------------------------");
@@ -134,9 +127,5 @@ public class Message implements Serializable{
         msg.read(app1);
         msg.read(app4);
         System.out.println("\n" + msg);
-
-        System.out.println("\nTest 7 - Json -------------------------------------------------");
-        System.out.println(msg.toJson());
-        
     }
 }
