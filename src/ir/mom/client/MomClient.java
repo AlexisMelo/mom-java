@@ -1,17 +1,10 @@
 package ir.mom.client;
 
-import ir.mom.server.model.Message;
-
-import java.util.List;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.ArrayList;
 
 import javax.ws.rs.core.Response;
 
@@ -21,20 +14,17 @@ import javax.ws.rs.core.Response;
  */
 public class MomClient {
     private String token;
-    private List<String> lstTopic;
     private Client jaxClient;
-
-    private MomClientTerminal momTerm;
-    private String REST_SERVICE_URL = "http://localhost:4567"; //à compléter quand le serv sera lancé
+    private String serviceUrl;
 
     /**
      * Constructeur
      * @param le token que le client a choisi
      */
-    public MomClient(String tokenString) {
+    public MomClient(String tokenString, String serviceUrl) {
         this.token = tokenString;
-        this.momTerm = new MomClientTerminal(this);
         this.jaxClient = ClientBuilder.newClient();
+        this.serviceUrl = serviceUrl;
     }
 
     /**
@@ -42,7 +32,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response getMessagesPeerToPeerAllApps(){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("p2p");
         
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -57,7 +47,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response getMessagesPeerToPeerOneApp(String tokenOtherApp){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("p2p/{token_other_app}")
                                  .resolveTemplate("token_other_app",tokenOtherApp);
         
@@ -74,7 +64,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response sendMessageToTopic(String topicId, String message){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("topic/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
@@ -92,7 +82,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response sendMessageToApplication(String tokenOtherApp, String message){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("p2p/{token_other_app}")
                                  .resolveTemplate("token_other_app",tokenOtherApp);
         
@@ -109,7 +99,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response getMessagesTopic(String topicId){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("topic/{topic_id}")
                                  .resolveTemplate("topic_id", topicId);
         
@@ -125,11 +115,11 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response subscribeTopic(String topicId){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("topic/subscribe/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
-        System.out.println(target.getUri().toString());
+        // System.out.println(target.getUri().toString());
         Response response = target.request(MediaType.APPLICATION_JSON)
                                   .header("token",this.token)
                                   .get();
@@ -143,7 +133,7 @@ public class MomClient {
      * @return Response la réponse
      */
     public Response unsubscribeTopic(String topicId){
-        WebTarget target = this.jaxClient.target(REST_SERVICE_URL)
+        WebTarget target = this.jaxClient.target(serviceUrl)
                                  .path("topics/unsubscribe/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         

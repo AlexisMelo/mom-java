@@ -33,7 +33,7 @@ public class Message implements Serializable{
     public void addReader(Application reader) throws CantAddWriterOfMessageToReadersException {
 
         //check si le reader n'est pas déjà dans la liste
-        if (this.hasRead.containsKey(reader)) {
+        if (this.sender.equals(reader)) {
             throw new CantAddWriterOfMessageToReadersException("L'application "+reader.getToken()+" est le lecteur de ce message.");
         }
         

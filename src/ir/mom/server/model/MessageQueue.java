@@ -8,8 +8,7 @@ import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 public class MessageQueue implements Serializable{
     private List<Message> messages; 
-    //à transformer en set de message pour éviter les doublons ? ou ajouter des conditions dans les add ?
-    // Léo: Non osef non ? si un user veut envoyer deux fois le même message c'est son problème non ?
+
     public MessageQueue() {
         this.messages = new LinkedList<Message>();
     }
@@ -34,15 +33,18 @@ public class MessageQueue implements Serializable{
         List<Message> messagesToRead = new LinkedList<Message>();
 
         for (Message msg : this.messages) {
-            System.out.println(msg);
             Boolean hasRead = msg.hasRead(reader);
+            // boolean isSender = msg.getSender().equals(reader);
 
             if (hasRead != null && !hasRead) {
                 messagesToRead.add(msg);
                 msg.read(reader);
+                if (msg.erasable()) {
+                    this.removeMessage(msg);
+                }
             }
         }
-
+        System.gc();
         return messagesToRead;
     }
 

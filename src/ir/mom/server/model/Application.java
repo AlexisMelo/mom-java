@@ -6,9 +6,8 @@ import ir.mom.server.exception.ApplicationAlreadySubscribedException;
 import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 import java.util.LinkedList;
-import java.io.Serializable;
 
-public class Application extends MessageQueue implements Serializable {
+public class Application extends MessageQueue {
     private String token;
     private List<Topic> subscriptions;
 
@@ -21,12 +20,15 @@ public class Application extends MessageQueue implements Serializable {
         return this.getMessageToRead(this);
     }
 
+    @Override
     public boolean equals(Object o){
         if (o == this) return true;
-        if (!(o instanceof Application)) return false;
+        if (!(o instanceof Application)) 
+            return false;
         Application app = (Application) o;
 
-        if(app.getToken() == this.getToken()) return true; // il ne faut pas tester les Topic sinon il y aura une boucle infinie.
+        if(app.getToken().equals(this.getToken())) // il ne faut pas tester les Topic sinon il y aura une boucle infinie.
+            return true; 
         return false;
     }
 

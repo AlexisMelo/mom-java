@@ -1,7 +1,6 @@
 package ir.mom.client;
 
 import java.util.InputMismatchException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 import javax.ws.rs.core.Response;
@@ -215,10 +214,9 @@ public class MomClientTerminal {
             } 
             catch(InputMismatchException | NumberFormatException e) {
                 System.out.println(msgErreur);
+                answerScanner.nextLine();
             }
-            
         } while(!answerValid);
-
         return answer;
     }
 
@@ -330,8 +328,15 @@ public class MomClientTerminal {
     }
 
     public static void main(String[] args) {
-        
-        MomClient momclt = new MomClient(args[0]);
+
+        if (args.length == 0){
+            System.out.println("Il faut donner le token du client dans les arguments de la commande");
+            System.exit(1);
+        }
+        String url = "http://localhost:4567/";
+        if (args.length >= 2)
+            url = args[1];
+        MomClient momclt = new MomClient(args[0], url);
         MomClientTerminal clt = new MomClientTerminal(momclt);
 
         while(true) { // à enlever et mettre les bons retours au bon endroit dans les fcts si on veut améliorer

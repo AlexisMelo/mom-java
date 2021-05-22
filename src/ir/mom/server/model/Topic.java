@@ -1,6 +1,5 @@
 package ir.mom.server.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 import ir.mom.server.exception.ApplicationAlreadySubscribedException;
@@ -8,7 +7,7 @@ import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 import java.util.ArrayList;
 
-public class Topic extends MessageQueue implements Serializable {
+public class Topic extends MessageQueue {
     private String title;
     private List<Application> subscribers;
 

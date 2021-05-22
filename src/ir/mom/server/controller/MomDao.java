@@ -2,7 +2,6 @@ package ir.mom.server.controller;
 
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.io.Serializable;
 
 import ir.mom.server.model.Topic;
@@ -12,7 +11,6 @@ import ir.mom.server.exception.ApplicationNotSubscribedException;
 import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 import ir.mom.server.exception.TopicDoesNotExistException;
 import ir.mom.server.exception.ApplicationAlreadySubscribedException;
-import java.util.Map;
 import java.util.TreeMap;
 import java.io.File;
 import java.io.ObjectOutputStream;
@@ -32,10 +30,11 @@ public class MomDao implements Serializable {
         this.lstApplication = new TreeMap<String,Application>();
     }
 
-    public static MomDao load(String path) throws FileNotFoundException, IOException, ClassNotFoundException{
+    public static MomDao load(String path) throws FileNotFoundException, IOException, ClassNotFoundException {
         File fichier = new File(path) ;
         ObjectInputStream ois =  new ObjectInputStream(new FileInputStream(fichier)) ;
-        MomDao m = (MomDao)ois.readObject() ;
+        MomDao m = (MomDao) ois.readObject() ;
+        ois.close();
         return m;
     }
 
@@ -43,6 +42,7 @@ public class MomDao implements Serializable {
         File fichier =  new File(path) ;
         ObjectOutputStream oos =  new ObjectOutputStream(new FileOutputStream(fichier)) ;
         oos.writeObject(this);
+        oos.close();
     }
 
     public void sendMessageToTopic(String sender, String idTopic, String msg) throws ApplicationNotSubscribedException, TopicDoesNotExistException {
@@ -80,18 +80,8 @@ public class MomDao implements Serializable {
 
         return topic.getMessageToRead(client);
     }
-
-    public List<Message> getMessageFromAllTopic(String tokenClient){
-        Application client = this.getApplicationFromString(tokenClient);
-        List<Message> listMessage = new ArrayList<Message>();
-
-        for(Topic topic : client.getSupscriptions()){
-            listMessage.addAll(topic.getMessageToRead(client));
-        }
-        return listMessage;
-    }
-
-    public List<Message> getAllMessageFromApplication(String tokenClient) {
+    
+    public List<Message> getMessageFromAllApplication(String tokenClient) {
         Application client = this.getApplicationFromString(tokenClient);
         return client.getAllPrivateMessages();
     }
