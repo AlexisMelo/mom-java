@@ -273,7 +273,7 @@ public class MomClientTerminal {
 
         System.out.println(sb.toString());
 
-        int answer = this.getIntBetweenRange(1,3);
+        int answer = this.getIntBetweenRange(1,4);
 
         switch(answer) {
             case 1:
