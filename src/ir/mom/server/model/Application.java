@@ -57,13 +57,13 @@ public class Application extends MessageQueue {
         
         topic.addSubscriber(this);
 
-        if(this.getSupscriptions().contains(topic)) 
+        if(this.getSubscriptions().contains(topic)) 
             throw new ApplicationAlreadySubscribedException("");
 
         this.subscriptions.add(topic);
     }
 
-    public void removeSubscrption(Topic topic) {
+    public void removeSubscription(Topic topic) {
         this.subscriptions.remove(topic);
         topic.removeSubscriber(this);
     }
@@ -72,7 +72,7 @@ public class Application extends MessageQueue {
         return this.token;
     }
 
-    public List<Topic> getSupscriptions(){
+    public List<Topic> getSubscriptions(){
         return this.subscriptions;
     }
 

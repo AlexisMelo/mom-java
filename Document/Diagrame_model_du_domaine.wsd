@@ -1,0 +1,18 @@
+@startuml Model du domaine
+
+object Message
+object MessageQueue
+object Topic
+object Application
+
+
+Message -* "0.n" MessageQueue
+Application "1.n\n(Lecteurs)" --*  Message
+
+Application --|> MessageQueue
+Topic -l-|> MessageQueue
+Topic *-u- "0.n\n(Abonnés)" Application
+
+
+
+@enduml
