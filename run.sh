@@ -11,7 +11,7 @@ run_client() {
 }
 
 case $1 in
-    "server") run_server $2;;
-    "client") run_client $2;;
+    "server") run_server $2 $3;;
+    "client") run_client $2 $3;;
     "") run_server; run_client;;
 esac
