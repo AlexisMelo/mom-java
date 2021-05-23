@@ -3,6 +3,7 @@ package ir.mom.server.model;
 import java.util.List;
 
 import ir.mom.server.exception.ApplicationAlreadySubscribedException;
+import ir.mom.server.exception.ApplicationNotSubscribedException;
 import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 import java.util.ArrayList;
@@ -30,7 +31,10 @@ public class Topic extends MessageQueue {
         });
     }
 
-    public void removeSubscriber(Application subscriber) {
+    public void removeSubscriber(Application subscriber) throws ApplicationNotSubscribedException {
+        if(!this.getSubscribers().contains(subscriber)) 
+            throw new ApplicationNotSubscribedException();
+
         this.getSubscribers().remove(subscriber);
         this.getMessages().forEach((msg) -> {
             msg.removeReader(subscriber);

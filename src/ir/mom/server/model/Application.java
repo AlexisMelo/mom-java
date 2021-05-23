@@ -3,6 +3,7 @@ package ir.mom.server.model;
 import java.util.List;
 
 import ir.mom.server.exception.ApplicationAlreadySubscribedException;
+import ir.mom.server.exception.ApplicationNotSubscribedException;
 import ir.mom.server.exception.CantAddWriterOfMessageToReadersException;
 
 import java.util.LinkedList;
@@ -63,7 +64,7 @@ public class Application extends MessageQueue {
         this.subscriptions.add(topic);
     }
 
-    public void removeSubscription(Topic topic) {
+    public void removeSubscription(Topic topic) throws ApplicationNotSubscribedException {
         this.subscriptions.remove(topic);
         topic.removeSubscriber(this);
     }

@@ -158,6 +158,27 @@ public class MomService {
         return message.toJson();
     }
 
+    public String unsubscribeToTopic(Request req, Response res) {
+        String topicName = req.params(":topic_name");
+        String tokenClient = req.headers("token");
+
+        ResponseServer message;
+
+        try{
+            this.getDao().unsubscribeToTopic(tokenClient, topicName);
+            message = new ResponseServer("L'utilisateur "+tokenClient+" vient de s'abonner au topic "+topicName, false);
+        }
+        catch(ApplicationNotSubscribedException e){
+            message = new ResponseServer("L'utilisateur "+tokenClient+" n'est pas abonné à "+topicName, true);
+        } 
+        catch (TopicDoesNotExistException e) {            
+            message = new ResponseServer("Le topic "+topicName+" n'existe pas.", true);
+        }
+
+        this.save();
+        return message.toJson();
+    }
+
     public static void main(String[] args) {
 
         MomDao dao = null;
@@ -191,6 +212,7 @@ public class MomService {
 
         path("/topic", () -> {
             get("/subscribe/:topic_name", service::subscribeToTopic);
+            get("/unsubscribe/:topic_name", service::unsubscribeToTopic);
             get("/:topic_name", service::getMessageFromTopic);
             post("/:topic_name", service::sendMessageToTopic);
         });

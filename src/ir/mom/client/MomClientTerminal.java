@@ -30,10 +30,10 @@ public class MomClientTerminal {
     public void menu() {
         StringBuilder menu = new StringBuilder();
 
-        menu.append("Que voulez-vous faire ?");
+        menu.append("\nQue voulez-vous faire ?");
         menu.append("\n1) Communiquer avec une autre application");
         menu.append("\n2) Etudier les topics");
-        menu.append("\n3) Quitter");
+        menu.append("\n3) Quitter\n");
 
         System.out.println(menu.toString());
 
@@ -63,16 +63,7 @@ public class MomClientTerminal {
         if (response.getErreur()) {
             System.out.println(response.getMessage());
         } else {
-            List<MessageJson> messages = response.getListMessage();
-
-            if (!messages.isEmpty()) {
-                for (MessageJson message : messages) {
-                    System.out.println(message.getSender() + " : " + message.getContent());
-                }  
-            }
-            else {
-                System.out.println("Vous n'avez aucun nouveau message !");
-            }
+            this.afficheMessages(response.getListMessage());
         }
     }
 
@@ -81,7 +72,7 @@ public class MomClientTerminal {
      */
     public void getMessagesPeerToPeerOneApp() {
 
-        System.out.println("De quelle application voulez-vous recevoir un message ?");
+        System.out.println("\nDe quelle application voulez-vous recevoir un message ?");
         String token = this.getIdTopicOrTokenApplication();
 
         ResponseServer response = this.getResponseServerObject(this.client.getMessagesPeerToPeerOneApp(token));
@@ -89,17 +80,7 @@ public class MomClientTerminal {
         if (response.getErreur()) {
             System.out.println(response.getMessage());
         } else {
-            List<MessageJson> messages = response.getListMessage();
-
-            if (!messages.isEmpty()) {
-                System.out.println("Voici tous les nouveaux messages de " + token);
-                for (MessageJson message : messages) {
-                    System.out.println(message.getContent());
-                }
-            }
-            else {
-                System.out.println("Vous n'avez aucun nouveau message de " + token + " !");
-            }
+            this.afficheMessages(response.getListMessage());
         }
     }
 
@@ -108,10 +89,10 @@ public class MomClientTerminal {
      */
     public void sendMessageToTopic() {
 
-        System.out.println("A quel topic souhaitez-vous envoyer un message ?");
+        System.out.println("\nA quel topic souhaitez-vous envoyer un message ?");
         String idTopic = this.getIdTopicOrTokenApplication(); //id du topic à qui envoyer le msg
 
-        System.out.println("Quel message souhaitez-vous envoyer ?");
+        System.out.println("\nQuel message souhaitez-vous envoyer ?");
         String message = this.getMessage(); //message que l'on doit envoyer
 
         ResponseServer response = this.getResponseServerObject(this.client.sendMessageToTopic(idTopic, message));
@@ -124,10 +105,10 @@ public class MomClientTerminal {
      */
     public void sendMessageToApplication() {
 
-        System.out.println("Quel est le token de l'application destinataire ?");
+        System.out.println("\nQuel est le token de l'application destinataire ?");
         String token = this.getIdTopicOrTokenApplication();
 
-        System.out.println("Quel message souhaitez-vous envoyer ?");
+        System.out.println("\nQuel message souhaitez-vous envoyer ?");
         String message = this.getMessage();
 
         ResponseServer response = this.getResponseServerObject(this.client.sendMessageToApplication(token, message));
@@ -140,7 +121,7 @@ public class MomClientTerminal {
      */
     public void getMessagesTopic() {
 
-        System.out.println("De quel topic souhaitez-vous recevoir les messages ?");
+        System.out.println("\nDe quel topic souhaitez-vous recevoir les messages ?");
         String idTopic = this.getIdTopicOrTokenApplication(); //identifiant du topic dont on doit obtenir la réponse
 
         ResponseServer response = this.getResponseServerObject(this.client.getMessagesTopic(idTopic));
@@ -148,17 +129,24 @@ public class MomClientTerminal {
         if (response.getErreur()) {
             System.out.println(response.getMessage());
         } else {
-            List<MessageJson> messages = response.getListMessage();
+            System.out.println("Voici tous les nouveaux messages du topic " + idTopic);
+            this.afficheMessages(response.getListMessage());
+        }
+    }
 
-            if (!messages.isEmpty()) {
-                System.out.println("Voici tous les nouveaux messages du topic " + idTopic);
-                for (MessageJson message : messages) {
-                    System.out.println(message.getContent());
-                }
+    /**
+        Afficher les messages d'un topic en particulier
+     */
+    private void afficheMessages(List<MessageJson> messages) {
+        System.out.println();
+        if (!messages.isEmpty()) {
+            for (MessageJson message : messages) {
+                System.out.println(message.getSender() + " :");
+                System.out.println(" - " + message.getContent());
             }
-            else {
-                System.out.println("Il n'y a aucun nouveau message dans le topic " + idTopic + " !");
-            }
+        }
+        else {
+            System.out.println("Il n'y a aucun nouveau message.");
         }
     }
 
@@ -167,7 +155,7 @@ public class MomClientTerminal {
      */
     public void subscribeTopic() {
 
-        System.out.println("A quel topic souhaitez-vous vous abonner ?");
+        System.out.println("\nA quel topic souhaitez-vous vous abonner ?");
         String idTopic = this.getIdTopicOrTokenApplication(); //id du topic à qui envoyer le msg
 
         ResponseServer response = this.getResponseServerObject(this.client.subscribeTopic(idTopic));
@@ -180,7 +168,7 @@ public class MomClientTerminal {
      */
     public void unsubscribeTopic() {
 
-        System.out.println("\n De quel topic souhaitez-vous vous désabonner ?");
+        System.out.println("\nDe quel topic souhaitez-vous vous désabonner ?");
         String idTopic = this.getIdTopicOrTokenApplication();
 
         ResponseServer response = this.getResponseServerObject(this.client.unsubscribeTopic(idTopic));
@@ -237,8 +225,8 @@ public class MomClientTerminal {
      */
     private String getIdTopicOrTokenApplication(){
         Scanner sc = new Scanner(System.in);
-        System.out.println("Id du topic:");
         String idTopic = sc.nextLine();
+        System.out.println();
         return idTopic;
     }
     
@@ -264,12 +252,12 @@ public class MomClientTerminal {
     private void communicateWithOtherApp() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Vous avez choisi de communiquer avec d'autres applications.");
+        sb.append("\nVous avez choisi de communiquer avec d'autres applications.\n");
         sb.append("\nQue voulez-vous faire ?");
         sb.append("\n1) Envoyer un message à une application");
         sb.append("\n2) Recevoir tous les messages");
         sb.append("\n3) Recevoir les messages d'une application en particulier");
-        sb.append("\n4) Retour");
+        sb.append("\n4) Retour\n");
 
         System.out.println(sb.toString());
 
@@ -296,13 +284,13 @@ public class MomClientTerminal {
     private void studyTheTopic(){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Vous avez choisi d'étudier les topics.");
+        sb.append("\nVous avez choisi d'étudier les topics.\n");
         sb.append("\nQue voulez-vous faire ?");
         sb.append("\n1) S'abonner à un topic");
         sb.append("\n2) Se désabonner d'un topic");
         sb.append("\n3) Publier un message sur un topic");
         sb.append("\n4) Recevoir les messages d'un topic");
-        sb.append("\n5) Retour");
+        sb.append("\n5) Retour\n");
 
         System.out.println(sb.toString());
 

@@ -100,6 +100,13 @@ public class MomDao implements Serializable {
         client.addSubscription(topic);
     }
 
+    public void unsubscribeToTopic(String tokenClient, String topicTitle) throws TopicDoesNotExistException, ApplicationNotSubscribedException {
+        Application client = this.getApplicationFromString(tokenClient);
+        Topic topic = this.getTopicFromString(topicTitle);
+
+        client.removeSubscription(topic);
+    }
+
     public Topic getTopicFromString(String topicTitle) throws TopicDoesNotExistException {
         Topic topic = this.lstTopic.get(topicTitle);
         if(topic == null){

@@ -134,7 +134,7 @@ public class MomClient {
      */
     public Response unsubscribeTopic(String topicId){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("/topics/unsubscribe/{topic_id}")
+                                 .path("/topic/unsubscribe/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
