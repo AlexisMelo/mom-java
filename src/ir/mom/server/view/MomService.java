@@ -12,6 +12,7 @@ import java.util.List;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.path;
+import static spark.Spark.port;
 import spark.Request;
 import spark.Response;
 
@@ -172,6 +173,19 @@ public class MomService {
 
         MomService service = new MomService(dao, daoPath);
         
+        if (args.length >= 1){
+            int number;
+
+            try {
+                number = Integer.valueOf(args[0]);
+                System.out.println("Utilisation du port: 4567");
+            } catch (NumberFormatException e) {
+                System.out.println("Erreur de lecture du port, utilisation du port par default: 4567");
+                number = 4567;
+            }
+            port(number);
+
+        }
 
         get("/ping", service::pong);
 
