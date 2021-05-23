@@ -178,7 +178,7 @@ public class MomService {
 
             try {
                 number = Integer.valueOf(args[0]);
-                System.out.println("Utilisation du port: 4567");
+                System.out.println("Utilisation du port: "+number);
             } catch (NumberFormatException e) {
                 System.out.println("Erreur de lecture du port, utilisation du port par default: 4567");
                 number = 4567;
