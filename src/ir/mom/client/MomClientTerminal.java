@@ -329,13 +329,15 @@ public class MomClientTerminal {
 
     public static void main(String[] args) {
 
-        if (args.length == 0){
+        if (args.length == 0) {
             System.out.println("Il faut donner le token du client dans les arguments de la commande");
             System.exit(1);
         }
-        String url = "http://localhost:4567/";
-        if (args.length >= 2)
+        String url = "http://localhost:4567";
+        if (args.length >= 2) {
             url = args[1];
+            System.out.println("utilisation de l'endpoint : " + url);
+        }
         MomClient momclt = new MomClient(args[0], url);
         MomClientTerminal clt = new MomClientTerminal(momclt);
 

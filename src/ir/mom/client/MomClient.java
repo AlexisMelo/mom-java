@@ -33,7 +33,7 @@ public class MomClient {
      */
     public Response getMessagesPeerToPeerAllApps(){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("p2p");
+                                 .path("/p2p");
         
         Response response = target.request(MediaType.APPLICATION_JSON)
                                   .header("token",this.token)
@@ -48,7 +48,7 @@ public class MomClient {
      */
     public Response getMessagesPeerToPeerOneApp(String tokenOtherApp){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("p2p/{token_other_app}")
+                                 .path("/p2p/{token_other_app}")
                                  .resolveTemplate("token_other_app",tokenOtherApp);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -65,7 +65,7 @@ public class MomClient {
      */
     public Response sendMessageToTopic(String topicId, String message){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("topic/{topic_id}")
+                                 .path("/topic/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -83,7 +83,7 @@ public class MomClient {
      */
     public Response sendMessageToApplication(String tokenOtherApp, String message){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("p2p/{token_other_app}")
+                                 .path("/p2p/{token_other_app}")
                                  .resolveTemplate("token_other_app",tokenOtherApp);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -100,7 +100,7 @@ public class MomClient {
      */
     public Response getMessagesTopic(String topicId){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("topic/{topic_id}")
+                                 .path("/topic/{topic_id}")
                                  .resolveTemplate("topic_id", topicId);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ public class MomClient {
      */
     public Response subscribeTopic(String topicId){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("topic/subscribe/{topic_id}")
+                                 .path("/topic/subscribe/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
         // System.out.println(target.getUri().toString());
@@ -134,7 +134,7 @@ public class MomClient {
      */
     public Response unsubscribeTopic(String topicId){
         WebTarget target = this.jaxClient.target(serviceUrl)
-                                 .path("topics/unsubscribe/{topic_id}")
+                                 .path("/topics/unsubscribe/{topic_id}")
                                  .resolveTemplate("topic_id",topicId);
         
         Response response = target.request(MediaType.APPLICATION_JSON)
