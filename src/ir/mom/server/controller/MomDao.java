@@ -76,7 +76,7 @@ public class MomDao implements Serializable {
         Topic topic = this.getTopicFromString(topicTitle);
 
         if(!topic.getSubscribers().contains(client))
-            throw new ApplicationNotSubscribedException("L'application n'est pas abbonée à ce topic");
+            throw new ApplicationNotSubscribedException("L'application n'est pas abonnée à ce topic");
 
         return topic.getMessageToRead(client);
     }

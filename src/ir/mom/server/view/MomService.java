@@ -166,7 +166,7 @@ public class MomService {
 
         try{
             this.getDao().unsubscribeToTopic(tokenClient, topicName);
-            message = new ResponseServer("L'utilisateur "+tokenClient+" vient de s'abonner au topic "+topicName, false);
+            message = new ResponseServer("L'utilisateur "+tokenClient+" vient de se désabonner au topic "+topicName, false);
         }
         catch(ApplicationNotSubscribedException e){
             message = new ResponseServer("L'utilisateur "+tokenClient+" n'est pas abonné à "+topicName, true);
